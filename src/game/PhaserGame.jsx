@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-import { StartScene } from "../gameScenes/StartScene"; // Import the start scene
-import { GameScene } from "../gameScenes/GameScene"; // Move the existing game logic here
+import { StartScene } from "../gameScenes/StartScene"; 
+import { GameScene } from "../gameScenes/GameScene";
+import {LoadingScene} from '../gameScenes/LoadingScene'
 export default function PhaserGame() {
     const gameContainer = useRef(null);
 
@@ -13,7 +14,7 @@ export default function PhaserGame() {
             width: 800,
             height: 660,
             parent: gameContainer.current,
-            scene: [StartScene, GameScene], // Add both scenes
+            scene: [StartScene, LoadingScene,GameScene], // Add both scenes
         };
 
         const game = new Phaser.Game(config);

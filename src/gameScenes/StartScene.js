@@ -30,7 +30,7 @@ export class StartScene extends Phaser.Scene {
         createGrounds(this, grid)
 
         startButton.on("pointerdown", () => {
-            this.scene.start("GameScene"); // Switch to the main game scene
+            this.scene.start("LoadingScene"); // Switch to the main game scene
         });
     }
 }

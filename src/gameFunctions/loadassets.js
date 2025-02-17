@@ -6,6 +6,7 @@ export function loadAssets(scene) {
     scene.load.audio("success", "/assets/Complete.mp3");
     scene.load.audio("fail", "/assets/Fail.wav");
     scene.load.image("house", "/assets/House.png");
-    scene.load.image("startButton", "/assets/Start Button.png"); // Add a start button asset
+    scene.load.image("startButton", "/assets/Start Button.png"); 
+    scene.load.image("Loading", "/assets/Loading.png"); 
 
 }
