@@ -20,8 +20,8 @@ export function createGrounds(scene, dropZones) {
         });
 
         // Create drop zone
-        const dropZone = scene.add.zone(pos.x, pos.y, ground.width * 0.6, ground.height * 0.6)
-            .setRectangleDropZone(ground.width * 0.6, ground.height * 0.6);
+        const dropZone = scene.add.zone(pos.x, pos.y, ground.width * 0.5, ground.height * 0.5)
+            .setRectangleDropZone(ground.width * 0.5, ground.height * 0.5);
 
         dropZone.associatedGround = ground; // Link ground to drop zone
 

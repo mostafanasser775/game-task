@@ -4,7 +4,8 @@ import { createSeedIcon } from "../gameFunctions/createSeedIcon";
 import { GlobalVariables } from "../game/GlobalVariables";
 import { createText } from "../gameFunctions/createText";
 import { createGrounds } from "../gameFunctions/createGrounds";
-
+import { loadAssets } from "../gameFunctions/loadassets";
+import {createHouse} from '../gameFunctions/createHouse'
 export default function PhaserGame() {
     const gameContainer = useRef(null);
 
@@ -25,14 +26,7 @@ export default function PhaserGame() {
 
         const game = new Phaser.Game(config);
 
-        function preload() {
-            this.load.image("background", "/assets/Background.png");
-            this.load.image("seed", "/assets/Seed.png");
-            this.load.image("plant", "/assets/Plant 1.png");
-            this.load.image("ground", "/assets/Ground 1.png");
-            this.load.audio("success", "/assets/Complete.mp3");
-            this.load.audio("fail", "/assets/Fail.wav");
-        }
+        function preload() { loadAssets(this) }
 
         function create() {
             // Background
@@ -46,8 +40,7 @@ export default function PhaserGame() {
                 createSeedIcon(this, 100, 50);
             }
             const textObjects = createText(this);
-
-
+            createHouse(this)
             // Handle Dragging
             this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
                 if (gameObject.texture.key === "ground") {
@@ -66,7 +59,7 @@ export default function PhaserGame() {
 
             // Drop Zones (Multiple Grounds)
             const dropZones = [];
-            createGrounds(this, dropZones); 
+            createGrounds(this, dropZones);
 
 
 
@@ -116,9 +109,6 @@ export default function PhaserGame() {
 
 
                         }
-
-
-
 
 
                     }
