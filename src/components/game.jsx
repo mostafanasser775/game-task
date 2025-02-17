@@ -1,12 +1,10 @@
-
-
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-import { createSeedIcon } from '../gameFunctions/createSeedIcon'
-import { loadAssets } from "../gameFunctions/loadassets";
-const GlobalVariables = {
-    seedCount: 3
-}
+import { createSeedIcon } from "../gameFunctions/createSeedIcon";
+import { GlobalVariables } from "../game/GlobalVariables";
+import { createText } from "../gameFunctions/createText";
+import { createGrounds } from "../gameFunctions/createGrounds";
+
 export default function PhaserGame() {
     const gameContainer = useRef(null);
 
@@ -28,89 +26,119 @@ export default function PhaserGame() {
         const game = new Phaser.Game(config);
 
         function preload() {
-            loadAssets(this)
+            this.load.image("background", "/assets/Background.png");
+            this.load.image("seed", "/assets/Seed.png");
+            this.load.image("plant", "/assets/Plant 1.png");
+            this.load.image("ground", "/assets/Ground 1.png");
+            this.load.audio("success", "/assets/Complete.mp3");
+            this.load.audio("fail", "/assets/Fail.wav");
         }
 
         function create() {
+            // Background
             this.add.image(400, 300, "background").setScale(1.5);
 
             // Toolbar background
-            this.add.rectangle(400, 50, 800, 100, 0x222222).setDepth(10);
+            this.add.rectangle(400, 50, 800, 100, 0x777770).setDepth(10);
 
-
-            // Display Seed Count on Toolbar
-            const seedCounterText = this.add.text(600, 30, `Seeds: ${GlobalVariables.seedCount}`, {
-                fontSize: "24px",
-                fill: "#fff",
-            }).setDepth(11);
-
-            // Seed Icon (Only 1, but count is tracked)
-
-            for (let i = 0; i < GlobalVariables.seedCount + 1; i++) {
-                createSeedIcon(this, 3, 150, 50)
+            // Seed selection toolbar
+            for (let i = 0; i < GlobalVariables.seedCount; i++) {
+                createSeedIcon(this, 100, 50);
             }
+            const textObjects = createText(this);
 
-            // Drop Zones (Multiple Grounds)
-            const dropZones = [];
-            const positions = [
-                { x: 300, y: 400 },
-                { x: 500, y: 400 },
-                { x: 400, y: 500 },
-            ];
-
-            positions.forEach((pos) => {
-                const ground = this.add.image(pos.x, pos.y, "ground").setScale(0.6);
-                const dropZone = this.add.zone(pos.x, pos.y, ground.width * 0.6, ground.height * 0.6)
-                    .setRectangleDropZone(ground.width * 0.6, ground.height * 0.6);
-
-                dropZones.push({ dropZone, planted: false });
-            });
 
             // Handle Dragging
             this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
-                gameObject.x = dragX;
-                gameObject.y = dragY;
+                if (gameObject.texture.key === "ground") {
+                    // Move ground
+                    gameObject.x = dragX;
+                    gameObject.y = dragY;
+
+                } else {
+                    // Move seed
+                    gameObject.x = dragX;
+                    gameObject.y = dragY;
+                    gameObject.setAlpha(0.5);
+                }
+                console.log(gameObject.x, gameObject.y)
             });
+
+            // Drop Zones (Multiple Grounds)
+            const dropZones = [];
+            createGrounds(this, dropZones); 
+
+
 
             // Handle Drop
             this.input.on("dragend", (pointer, gameObject) => {
+
                 for (const zone of dropZones) {
                     if (!zone.planted && Phaser.Geom.Rectangle.Contains(zone.dropZone.getBounds(), gameObject.x, gameObject.y)) {
+                        if (gameObject.texture.key === "seed") {
 
-                        this.sound.play("success");
+                            this.sound.play("success");
+                            this.tweens.add({
+                                targets: gameObject, alpha: 0, scale: 0, duration: 500,
+                                onComplete: () => gameObject.destroy(),
+                            });
 
-                        this.tweens.add({
-                            targets: gameObject, alpha: 0, scale: 0,
-                            duration: 500,
-                            onComplete: () => gameObject.destroy(),
-                        });
+                            const plant = this.add.image(zone.dropZone.x, zone.dropZone.y - 10 - 20, "plant").setScale(0);
 
-                        const plant = this.add.image(zone.dropZone.x, zone.dropZone.y - 20, "plant").setScale(0);
-                        this.tweens.add({
-                            targets: plant,
-                            scale: 0.065,
-                            alpha: 1,
-                            duration: 700,
-
-
-                        });
-
-                        zone.planted = true;
-
-                        GlobalVariables.seedCount--;
-                        seedCounterText.setText(`Seeds: ${GlobalVariables.seedCount}`);
+                            this.tweens.add({
+                                targets: plant, scale: 0.065, alpha: 1,
+                                duration: 700,
+                            });
+                            // Find the corresponding ground and remove it
+                            const ground = zone.dropZone.associatedGround;
+                            if (ground) {
+                                this.tweens.add({
+                                    targets: ground,
+                                    alpha: 0,
+                                    duration: 500,
+                                    onComplete: () => ground.destroy(),
+                                });
+                            }
 
 
+                            // Update Global Variables
+                            GlobalVariables.seedCount--;
+                            GlobalVariables.score += 10; // Example score increment
 
-                        return;
+                            // Update the text UI
+                            textObjects.updateSeedCount();
+                            textObjects.updateScore();
+
+
+                            zone.planted = true;
+
+                            return;
+
+
+                        }
+
+
+
+
+
                     }
                 }
+                GlobalVariables.seedCount--;
+
 
                 // If dropped outside a valid zone, return to toolbar
-                gameObject.x = gameObject.input.dragStartX;
-                gameObject.y = gameObject.input.dragStartY;
-                this.sound.play("fail");
-            });
+                if (gameObject.texture.key === "seed") {
+                    gameObject.x = gameObject.input.dragStartX;
+                    gameObject.y = gameObject.input.dragStartY;
+                    gameObject.setAlpha(1);
+                    this.sound.play("fail");
+                }
+
+            }
+            );
+
+            // Save ground position after drag ends
+
         }
 
         function update() { }

@@ -1,16 +1,18 @@
-
-export function createSeedIcon(scene, count, x, y) {
+import { GlobalVariables } from "../game/GlobalVariables";
+export function createSeedIcon(scene, x, y) {
 
     const seedIcon = scene.add.image(x, y, "seed")
-        .setScale(0.08)
+        .setScale(0.06)
+        .setOrigin(0.5)
         .setInteractive()
         .setDepth(10);
 
-    scene.input.setDraggable(seedIcon);
-    if (count === 1) {
-         seedIcon.disableInteractive();
-         seedIcon.setAlpha(0.5); 
+    GlobalVariables.seedCount > 1 &&
+        scene.input.setDraggable(seedIcon);
+
+    if (GlobalVariables.seedCount <= 1) {
+        seedIcon.setAlpha(0.5); // Set opacity to 50%
+        seedIcon.disableInteractive(); // Disable draggin
     }
 
-    return seedIcon;
 }
