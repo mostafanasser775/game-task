@@ -1,13 +1,17 @@
 import './index.css';
-// import PhaserGame from './components/game';
-import PhaserGame from './game/PhaserGame';
+import { Route, Routes } from 'react-router-dom';
+import { GamePage } from './pages/GamePage';
+import { HomePage } from './pages/HomePage';
 function App() {
     return (
-        <div className="flex h-screen w-screen bg-slate-500 justify-center items-center">
-            <div className="w-[800px] h-[600px] flex justify-center items-center bg-gray-800 rounded-lg shadow-lg">
-                <PhaserGame />
-            </div>
+        <div>
+            <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/game" element={<GamePage />} />
+            
+            </Routes>
         </div>
+
     );
 }
 
