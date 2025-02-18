@@ -16,6 +16,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.sound.play("Complete");
+
         this.add.image(400, 300, "background").setScale(1.5);
         this.add.rectangle(400, 50, 800, 100, 0x777770).setDepth(10);
 
@@ -33,7 +35,7 @@ export class GameScene extends Phaser.Scene {
             } else {
                 gameObject.x = dragX;
                 gameObject.y = dragY;
-                gameObject.setAlpha(0.5);
+                gameObject.setAlpha(0.75);
             }
         });
 
@@ -57,8 +59,14 @@ export class GameScene extends Phaser.Scene {
                             onComplete: () => {
                                 GlobalVariables.seedCount--;
                                 GlobalVariables.score += 10;
+
                                 textObjects.updateSeedCount();
                                 textObjects.updateScore();
+                                if (GlobalVariables.seedCount === 0) {
+                                    this.time.delayedCall(1000, () => {
+                                        this.scene.start("LevelUpScene"); // Go to level-up scene
+                                    });
+                                }
                             }
                         });
 

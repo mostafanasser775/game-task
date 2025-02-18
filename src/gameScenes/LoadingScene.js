@@ -16,7 +16,6 @@ export class LoadingScene extends Phaser.Scene {
         this.add.image(400, 300, "Loading").setScale(0.1);
         setTimeout(() => {
             this.scene.start('GameScene');
-            this.sound.play("Complete");
 
         }, 3000); 
     }

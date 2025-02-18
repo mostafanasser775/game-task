@@ -3,6 +3,7 @@ import Phaser from "phaser";
 import { StartScene } from "../gameScenes/StartScene"; 
 import { GameScene } from "../gameScenes/GameScene";
 import {LoadingScene} from '../gameScenes/LoadingScene'
+import { LevelUpScene } from "../gameScenes/LevelUpScene";
 export default function PhaserGame() {
     const gameContainer = useRef(null);
 
@@ -14,7 +15,7 @@ export default function PhaserGame() {
             width: 800,
             height: 660,
             parent: gameContainer.current,
-            scene: [StartScene, LoadingScene,GameScene], // Add both scenes
+            scene: [StartScene, LoadingScene,GameScene,LevelUpScene], // Add both scenes
         };
 
         const game = new Phaser.Game(config);
