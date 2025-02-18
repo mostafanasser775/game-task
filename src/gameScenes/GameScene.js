@@ -45,36 +45,29 @@ export class GameScene extends Phaser.Scene {
                 if (!zone.planted && Phaser.Geom.Rectangle.Contains(zone.dropZone.getBounds(), gameObject.x, gameObject.y)) {
                     if (gameObject.texture.key === "seed") {
                         this.sound.play("success");
+
                         this.tweens.add({
-                            targets: gameObject,
-                            alpha: 0,
-                            scale: 0,
-                            duration: 500,
+                            targets: gameObject, alpha: 0, scale: 0, duration: 500,
                             onComplete: () => gameObject.destroy(),
                         });
 
-                        const plant = this.add.image(zone.dropZone.x, zone.dropZone.y - 10 - 20, "plant").setScale(0);
+                        const plant = this.add.image(zone.dropZone.x, zone.dropZone.y - 20, "plant").setScale(0);
                         this.tweens.add({
-                            targets: plant,
-                            scale: 0.065,
-                            alpha: 1,
-                            duration: 700,
+                            targets: plant, scale: 0.05, alpha: 1, duration: 700,
+                            onComplete: () => {
+                                GlobalVariables.seedCount--;
+                                GlobalVariables.score += 10;
+                                textObjects.updateSeedCount();
+                                textObjects.updateScore();
+                            }
                         });
 
                         const ground = zone.dropZone.associatedGround;
                         if (ground) {
                             this.tweens.add({
-                                targets: ground,
-                                alpha: 0,
-                                duration: 500,
-                                onComplete: () => ground.destroy(),
+                                targets: ground, alpha: 0, duration: 500, onComplete: () => ground.destroy()
                             });
                         }
-
-                        GlobalVariables.seedCount--;
-                        GlobalVariables.score += 10;
-                        textObjects.updateSeedCount();
-                        textObjects.updateScore();
 
                         zone.planted = true;
                         return;
@@ -82,7 +75,6 @@ export class GameScene extends Phaser.Scene {
                 }
             }
 
-            GlobalVariables.seedCount--;
             if (gameObject.texture.key === "seed") {
                 gameObject.x = gameObject.input.dragStartX;
                 gameObject.y = gameObject.input.dragStartY;

@@ -1,7 +1,7 @@
 
 export function createHouse(scene) {
 
-    const house = scene.add.image(500, 220, "house")
+    const house = scene.add.image(500, 180, "house")
         .setScale(0)
         .setAlpha(0).setDepth(12);
 

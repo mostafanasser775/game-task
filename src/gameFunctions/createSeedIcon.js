@@ -11,8 +11,8 @@ export function createSeedIcon(scene, x, y) {
         scene.input.setDraggable(seedIcon);
 
     if (GlobalVariables.seedCount <= 1) {
-        seedIcon.setAlpha(0.5); // Set opacity to 50%
-        seedIcon.disableInteractive(); // Disable draggin
+        seedIcon.setAlpha(0.75); 
+        seedIcon.disableInteractive(); 
     }
 
 }

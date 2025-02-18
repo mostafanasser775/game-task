@@ -12,12 +12,13 @@ export class LoadingScene extends Phaser.Scene {
         gameState.progressbar = this.add.rectangle(402 - 230, 384, 4, 28, 0xffffff).setDepth(12);
     }
     create() {
-
         this.add.image(400, 300, "background").setScale(1.5);
         this.add.image(400, 300, "Loading").setScale(0.1);
         setTimeout(() => {
             this.scene.start('GameScene');
-        }, 3000); // After 3 seconds
+            this.sound.play("Complete");
+
+        }, 3000); 
     }
     update() {
 

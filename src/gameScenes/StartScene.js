@@ -14,13 +14,14 @@ export class StartScene extends Phaser.Scene {
 
     create() {
         this.add.image(400, 300, "background").setScale(1.5);
+        this.sound.play("InGameSound");
 
 
-        const startButton = this.add.image(400, 580, "startButton")
+        const startButton = this.add.image(400, 600, "startButton")
             .setScale(0.25)
             .setInteractive();
 
-        this.add.text(400, 620, "Start Game", {
+        this.add.text(400, 640, "Start Game", {
             fontSize: "20px",
             fill: "#fff",
         }).setOrigin(0.5);
@@ -28,6 +29,7 @@ export class StartScene extends Phaser.Scene {
         createHouse(this)
         const grid = [];
         createGrounds(this, grid)
+        
 
         startButton.on("pointerdown", () => {
             this.scene.start("LoadingScene"); // Switch to the main game scene
